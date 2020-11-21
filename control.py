@@ -4,7 +4,6 @@ import random
 import time 
 import fishing
 
-#images
 running = True
 tick = 0.3
 
@@ -13,18 +12,25 @@ class Client:
         self.epoch = epoch 
         self.fisher = fishing.Fisher()
 
-    def calibrate(self):
-        pass
-
     def elapseTime(self):
         self.epoch = round(time.time() - self.epoch, 2)
         
 client = Client()
 
+training = ['fly fishing', 'net fishing']
+
+train = input('What do you want to train? ') 
+while train not in training:
+    train = input('Not supported yet! What do you want to train? ')
+
 while True: 
     time.sleep(tick)
-    client.fisher.fish()
-    client.calibrate()
+    if train == 'fly fishing':
+        client.fisher.flyFishing()
+    elif train == 'net fishing': 
+        client.fisher.netFishing()
+    
+
 
 
 
