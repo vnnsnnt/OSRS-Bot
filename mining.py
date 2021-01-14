@@ -11,7 +11,7 @@ inventoryClosed = './clientImages/inventoryClosed.jpg'
 notMining = './mineImages/notMining.jpg'
 inventoryCopper = './mineImages/inventoryCopper.jpg'
 coalMining = ['./mineImages/coalMining.jpg', './mineImages/coalMining2.jpg', './mineImages/coalMining3.jpg', './mineImages/coalMining4.jpg', './mineImages/coalMining5.jpg']
-ironMining = ['./mineImages/ironMining.jpg', './mineImages/ironMining2.jpg', './mineImages/ironMining3.jpg', './mineImages/ironMining4.jpg', './mineImages/ironMining5.jpg']
+ironMining = ['./mineImages/ironMining.jpg', './mineImages/ironMining2.jpg']
 inventoryCoal = './mineImages/inventoryCoal.jpg'
 inventoryIron = './mineImages/inventoryIron.jpg'
 
@@ -40,7 +40,7 @@ class Miner:
                 print('Looking for a mining spot!') 
                 for images in self.currentMining:
                     print('trying', images)
-                    self.miningSpot = bot.locateCenterOnScreen(images, confidence=0.55) #finds the mining area 
+                    self.miningSpot = bot.locateCenterOnScreen(images, confidence=0.6) #finds the mining area 
                     if self.miningSpot is not None: #if mining area is found 
                         print('Found a mining spot!') 
                         self.hasMiningSpot = True 
@@ -57,7 +57,6 @@ class Miner:
             print('Started Mining!') 
         
         if self.isMining: 
-            time.sleep(1.9) #checks every for mining on an interval 
             if bot.locateOnScreen(notMining, confidence=0.6) is not None: 
                 self.isMining = False 
                 print('Stopped Mining!') 

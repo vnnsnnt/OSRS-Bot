@@ -1,11 +1,11 @@
 import pyautogui as bot 
 import time
-mouseSpeed = 0.3
+mouseSpeed = 0.1
 
 flyFishing = ['./fishImages/flyFishing.jpg', './fishImages/flyFishing2.jpg', './fishImages/flyFishing3.jpg']
 netFishing = ['./fishImages/netFishing.jpg']
 fullIndicator = './fishImages/fullIndicator.jpg'
-levelUpIndicator = './fishImages/levelUpIndicator.jpg'
+levelUpIndicator = './clientImages/levelUpIndicator.jpg'
 notFishing = './fishImages/notFishing.jpg'
 inventoryOpen = './clientImages/inventoryOpen.jpg'
 inventoryClosed = './clientImages/inventoryClosed.jpg'
@@ -13,15 +13,24 @@ inventorySalmon = './fishImages/inventorySalmon.jpg'
 inventoryTrout = './fishImages/inventoryTrout.jpg'
 inventoryShrimp = './fishImages/inventoryShrimp.jpg'
 inventoryAnchovie = './fishImages/inventoryAnchovie.jpg' 
+leakCue = './fishImages/leak.jpg'
+net = './fishImages/net.jpg'
+minnows = ['./fishImages/minnows1.jpg', './fishImages/minnows2.jpg', './fishImages/minnows3.jpg', './fishImages/minnows4.jpg', './fishImages/minnows5.jpg', './fishImages/minnows6.jpg']
+barbarianFishing = ['./fishImages/barbarianFishing1.jpg', './fishImages/barbarianFishing2.jpg', './fishImages/barbarianFishing3.jpg', './fishImages/barbarianFishing4.jpg', './fishImages/barbarianFishing5.jpg' ]
+inventoryLeapingTrout = './fishImages/inventoryLeapingTrout.jpg' 
+inventoryLeapingSalmon = './fishImages/inventoryLeapingSalmon.jpg'
+inventoryLeapingSturgeon = './fishImages/inventoryLeapingSturgeon.jpg'
 
 class Fisher:
-    def __init__(self, fishingSpot=[], isFishing=False, isFull=False, hasFishingSpot=False, currentFishing=flyFishing, fishes=[inventorySalmon, inventoryTrout]):
+    def __init__(self, fishingSpot=[], isFishing=False, isFull=False, hasFishingSpot=False, currentFishing=[], fishes=[inventorySalmon, inventoryTrout]):
         self.fishingSpot = fishingSpot 
         self.isFishing = isFishing
         self.isFull = isFull 
         self.hasFishingSpot = hasFishingSpot 
         self.currentFishing = currentFishing 
         self.fishes = fishes
+        self.isTrawling = False 
+        self.interval = 0
 
     def calibrate(self): 
         if not self.isFishing: 
@@ -44,7 +53,7 @@ class Fisher:
                         self.hasFishingSpot = True 
                         break
                 else: 
-                    print('Failed to find a fishing spot!')
+                    print('Failed to find a fishing spot!') 
                     
         
     def fish(self):
@@ -56,11 +65,11 @@ class Fisher:
             print('Started fishing!') 
 
         if self.isFishing:
-            time.sleep(6) #checks every for fishing on an interval 
+            time.sleep(self.interval) #checks every for fishing on an interval 
             if bot.locateOnScreen(notFishing, confidence=0.6) is not None: 
                 self.isFishing = False 
                 print('Stopped fishing!') 
-        
+            
         if self.isFull: 
             print('Dropping inventory!')
             try:  
@@ -77,15 +86,45 @@ class Fisher:
                 print('Dropped all of %s' % fish)
             bot.keyUp('shift') 
             self.isFull = False 
+        
 
     def flyFishing(self): 
         self.currentFishing = flyFishing 
         self.fishes = [inventorySalmon, inventoryTrout] 
+        self.interval = 6
         self.fish()
 
     def netFishing(self):
         self.currentFishing = netFishing 
         self.fishes = [inventoryShrimp, inventoryAnchovie] 
+        self.interval = 5
         self.fish() 
+        
     
+    def trawler(self):
+        self.interval = 4
+        if not self.isTrawling and bot.locateOnScreen(net, confidence=0.7) is None:
+            self.fishingSpot = bot.locateCenterOnScreen(leakCue, confidence=0.8) 
+            print('finding leak')
+            if self.fishingSpot is not None: 
+                bot.moveTo(self.fishingSpot[0], self.fishingSpot[1], 0.1)
+                bot.click() 
+                time.sleep(self.interval)
+                self.isTrawling = False
+            else:
+                print('found no leak')
 
+    def minnows(self):
+        self.interval = 4
+        self.currentFishing = minnows 
+        self.fishes = [] 
+        self.fish()
+
+    def barbarianFishing(self):
+        self.interval = 5
+        self.currentFishing = barbarianFishing 
+        self.fishes = [inventoryLeapingSalmon, inventoryLeapingTrout, inventoryLeapingSturgeon]
+        self.fish()
+
+    
+        
