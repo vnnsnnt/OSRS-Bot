@@ -86,6 +86,7 @@ class Fisher:
                 print('Dropped all of %s' % fish)
             bot.keyUp('shift') 
             self.isFull = False 
+            print('done')
         
 
     def flyFishing(self): 
